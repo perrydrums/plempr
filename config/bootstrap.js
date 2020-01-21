@@ -9,22 +9,42 @@
  * https://sailsjs.com/config/bootstrap
  */
 
-module.exports.bootstrap = async function() {
+module.exports.bootstrap = async function(cb) {
 
-  // By convention, this is a good place to set up fake data during development.
-  //
-  // For example:
-  // ```
-  // // Set up fake development data (or if we already have some, avast)
-  // if (await User.count() > 0) {
-  //   return;
-  // }
-  //
-  // await User.createEach([
-  //   { emailAddress: 'ry@example.com', fullName: 'Ryan Dahl', },
-  //   { emailAddress: 'rachael@example.com', fullName: 'Rachael Shaw', },
-  //   // etc.
-  // ]);
-  // ```
+  sails.config.appName = 'Sails Chat App';
 
+  // Generate Chat Messages
+  try {
+    let messageCount = ChatMessage.count();
+    if (messageCount > 0){
+      return;
+    }
+
+    let users = await User.find();
+    if (users.length >= 3) {
+      console.log('Generating messages...');
+
+      await ChatMessage.create({
+        message: 'Hey Everyone! Welcome to the community!',
+        createdBy: users[1].id
+      });
+
+      await ChatMessage.create({
+        message: 'How\'s it going?',
+        createdBy: users[2].id
+      });
+
+      await ChatMessage.create({
+        message: 'Super excited!',
+        createdBy: users[0].id
+      });
+
+    } else {
+      console.log('skipping message generation');
+    }
+  } catch(err){
+    console.error(err);
+  }
+
+  cb();
 };

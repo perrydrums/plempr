@@ -19,8 +19,16 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': { view: 'pages/homepage' },
-
+  '/': { view: 'homepage' },
+  '/chat': { view: 'chatroom' },
+  '/profile': {
+    controller: 'UserController',
+    action: 'render'
+  },
+  '/postMessage': {
+    controller: 'ChatMessageController',
+    action: 'postMessage'
+  }
 
   /***************************************************************************
   *                                                                          *
