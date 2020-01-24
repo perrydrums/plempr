@@ -31,6 +31,8 @@
       // Check which words are valid.
       if (send && postField.val() !== '') {
         send = false;
+        $('#validation').text('woord niet gevonden :(');
+        addButton.prop('disabled', true);
 
         // Only check the words every 2 seconds.
         setTimeout(() => {
@@ -72,11 +74,12 @@
     };
 
     // Add a word, with the sound, to the message.
-    // TODO: add sound.
     const addWord = () => {
       message.push(postField.val());
       messageResult.text(message.join(' '));
       postField.val('');
+      $('#validation').text('typ een woord');
+      addButton.prop('disabled', true);
     };
 
     addButton.click(addWord);
