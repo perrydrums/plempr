@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const easterEggs = ['oke', 'nice'];
+
 module.exports = {
 
   postMessage: async (request, response) => {
@@ -19,8 +21,8 @@ module.exports = {
     // let audio = '';
     let audioFiles = [];
     for (const word of words) {
-      if (word === 'oke') {
-        audioFiles.push('/audio/oke.mp3');
+      if (easterEggs.indexOf(word) !== -1) {
+        audioFiles.push(`/audio/${word}.mp3`);
         continue;
       }
       const url = `https://nl.wiktionary.org/api/rest_v1/page/media/${word}`;
@@ -89,7 +91,7 @@ module.exports = {
       valid = false;
     }
 
-    if (word === 'oke') {
+    if (easterEggs.indexOf(word) !== -1) {
       valid = true;
     }
 
@@ -97,4 +99,3 @@ module.exports = {
   }
 
 };
-
