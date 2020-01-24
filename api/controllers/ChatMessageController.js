@@ -19,6 +19,10 @@ module.exports = {
     // let audio = '';
     let audioFiles = [];
     for (const word of words) {
+      if (word === 'oke') {
+        audioFiles.push('/audio/oke.mp3');
+        continue;
+      }
       const url = `https://nl.wiktionary.org/api/rest_v1/page/media/${word}`;
       const response = await httpRequest.get(url);
 
@@ -83,6 +87,10 @@ module.exports = {
       }
     } catch (err) {
       valid = false;
+    }
+
+    if (word === 'oke') {
+      valid = true;
     }
 
     res.send({valid});
