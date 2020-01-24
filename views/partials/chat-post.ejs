@@ -1,10 +1,14 @@
 <div class="ui basic segment">
     <div class="ui form">
         <div class="ui field">
-            <label>Post Message</label>
-            <textarea id="post-field" rows="2"></textarea>
+            <input type="text" id="post-field" placeholder="typ een woord"/>
+            <div id="validation">type a word</div>
+            <button type="submit" id="add-button" class="ui right floated large orange button" disabled>add word</button>
         </div>
-        <button id="post-btn" class="ui right floated large orange button" type="submit">Post</button>
+        <div class="ui field">
+            <div id="message"></div>
+            <button id="post-btn" class="ui right floated large orange button" type="submit">Post</button>
+        </div>
     </div>
     <div id="post-err" class="ui tiny compact negative message" style="display:none;">
         <p>Oops! Something went wrong.</p>
@@ -15,36 +19,79 @@
 
   activateChat = () => {
     const postField = $('#post-field');
+    const addButton = $('#add-button');
     const postButton = $('#post-btn');
     const postErr = $('#post-err');
+    const messageResult = $('#message');
+
+    // Set eventListener on postField to check the words.
+    let send = true;
+    let message = [];
+    postField.bind('input', () => {
+      // Check which words are valid.
+      if (send && postField.val() !== '') {
+        send = false;
+
+        // Only check the words every 2 seconds.
+        setTimeout(() => {
+          io.socket.post('/checkWord', {word: postField.val()}, validation => {
+            if (validation.valid) {
+              $('#validation').text('woord gevonden!');
+              addButton.prop('disabled', false);
+            } else {
+              $('#validation').text('woord niet gevonden :(');
+              addButton.prop('disabled', true);
+            }
+          });
+
+          send = true;
+        }, 500);
+      }
+
+      if (postField.val() === '') {
+        $('#validation').text('typ een woord');
+        addButton.prop('disabled', true);
+      }
+    });
 
     // Save a message.
     const postMessage = () => {
-      if (postField.val() === "") {
-        alert("Please type a message!");
-      } else {
-        const text = postField.val();
-        io.socket.post('/postMessage', { message: text }, (resData, jwRes) => {
+      if (message) {
+        const text = message.join(' ');
+        io.socket.post('/postMessage', {message: text}, (resData, jwRes) => {
           if (jwRes.statusCode !== 200) {
-            postErr.html("<p>" +  resData.message +"</p>")
+            postErr.html("<p>" + resData.message + "</p>");
             postErr.show();
           } else {
-            postField.val(''); // clear input field
+            postField.val('');
           }
         });
       }
     };
 
-    // Bind to click event.
-    postButton.click(postMessage);
+    // Add a word, with the sound, to the message.
+    // TODO: add sound.
+    const addWord = () => {
+      message.push(postField.val());
+      messageResult.text(message.join(' '));
+      postField.val('');
+    };
 
-    // Bind to enter key event.
+    addButton.click(addWord);
+
+    // Add event listener for the ENTER key.
     postField.keypress(e => {
       const keyCode = (e.keyCode ? e.keyCode : e.which);
-      if (keyCode == '13') {
-        postMessage();
+      if (keyCode === 13) {
+        addWord();
       }
     });
+
+    // Remove spaces.
+    postField.on('input', () => postField.val(postField.val().replace(/\s/g, '')));
+
+    // Bind to click event.
+    postButton.click(postMessage);
   }
 
 </script>

@@ -28,6 +28,10 @@ module.exports.routes = {
   '/postMessage': {
     controller: 'ChatMessageController',
     action: 'postMessage'
+  },
+  '/checkWord': {
+    controller: 'ChatMessageController',
+    action: 'checkWord'
   }
 
   /***************************************************************************

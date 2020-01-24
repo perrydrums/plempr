@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="extra text">
-         {{:message}}
+      <div class="play-button" id="{{:createdAt}}" onclick="playAudio(this.id)"/>
     </div>
   </div>
 </div>
@@ -25,7 +25,33 @@
 
 <script type="text/javascript">
 
-  const loadMessages = () => {
+    let audioFiles = {};
+    let files = [];
+    let player = null;
+    let index = 0;
+    let audio = new Audio();
+
+    const playAudio = (id) => {
+      console.log('aaaa');
+      files = audioFiles[id];
+      player = document.getElementById(id);
+
+      audio.src = files[index];
+      audio.play();
+      index ++;
+
+      audio.onended = function() {
+        if (index < files.length){
+          audio.src = files[index];
+          audio.play();
+          index ++;
+        } else {
+          index = 0;
+        }
+      };
+    };
+
+    const loadMessages = () => {
     // Load existing chat messages.
     io.socket.get('/chatMessage', messages => {
       renderChatMessages(messages);
@@ -46,6 +72,17 @@
     // Automatically scroll downwards.
     const scrollHeight = chatContent.prop("scrollHeight");
     chatContent.animate({ scrollTop: scrollHeight }, "slow");
+
+    // Save audio.
+    for (const message of data) {
+      let audio;
+      if (!Array.isArray(message.audio)) {
+        audio = message.audio.split(';');
+      } else {
+        audio = message.audio;
+      }
+      audioFiles[message.createdAt] = audio;
+    }
   }
 
 </script>

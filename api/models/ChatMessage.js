@@ -18,6 +18,11 @@ module.exports = {
       required: true
     },
 
+    audio: {
+      type: 'string',
+      required: true,
+    },
+
     createdBy : {
       model: 'user',
       required: true
