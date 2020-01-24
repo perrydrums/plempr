@@ -40,12 +40,12 @@ module.exports = {
         createdBy: user.id,
       });
 
-      sails.sockets.blast('chatmessage', {
+      sails.sockets.blast('chatmessage', [{
         message: request.body.message,
         audio: audioFiles,
         createdBy: user,
         createdAt: Date.now(),
-      });
+      }]);
 
     } catch (err) {
       return response.serverError(err);

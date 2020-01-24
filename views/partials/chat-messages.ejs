@@ -30,15 +30,19 @@
     let player = null;
     let index = 0;
     let audio = new Audio();
+    let lastId = null;
 
     const playAudio = (id) => {
-      console.log('aaaa');
+      if (lastId !== id) {
+        index = 0;
+      }
       files = audioFiles[id];
       player = document.getElementById(id);
 
       audio.src = files[index];
       audio.play();
       index ++;
+      lastId = id;
 
       audio.onended = function() {
         if (index < files.length){
