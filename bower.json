@@ -6,7 +6,7 @@
     "perryjanssen"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/perrydrums/plembr",
   "ignore": [
     "**/.*",
     "node_modules",
