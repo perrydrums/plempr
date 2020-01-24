@@ -23,10 +23,13 @@ module.exports = {
       const response = await httpRequest.get(url);
 
       const json = JSON.parse(response);
-      if (json.items.length > 0) {
-        if (json.items[0].type === 'audio') {
-          // audio = (json.items[0].original.source);
-          audioFiles.push(json.items[0].original.source);
+
+      if (Array.isArray(json.items)) {
+        for (const item of json.items) {
+          if (item.type === 'audio') {
+            audioFiles.push(item.original.source);
+            break;
+          }
         }
       }
     }
@@ -70,14 +73,14 @@ module.exports = {
       const response = await httpRequest.get(url);
       const json = JSON.parse(response);
 
-
-      // TODO: Make work if there's more media.
-      if (json.items.length > 0) {
-        if (json.items[0].type === 'audio') {
-          valid = true;
+      if (Array.isArray(json.items)) {
+        for (const item of json.items) {
+          if (item.type === 'audio') {
+            valid = true;
+            break;
+          }
         }
       }
-
     } catch (err) {
       valid = false;
     }
