@@ -33,7 +33,7 @@
     let lastId = null;
 
     const playAudio = (id) => {
-      if (lastId !== id) {
+      if (lastId !== id || index >= files.length) {
         index = 0;
       }
       files = audioFiles[id];
